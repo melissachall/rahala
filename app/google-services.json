@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "657837871311",
+    "project_id": "rahala-9deb2",
+    "storage_bucket": "rahala-9deb2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657837871311:android:b43a367ac45ad653f1e7ba",
+        "android_client_info": {
+          "package_name": "com.example.rahala"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "657837871311-h55d5l874hjs5t3ajunrbeecjfbpe0ct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx1DYD5c1LSFnkHsR9U-7vBt43zIL3wt0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "657837871311-h55d5l874hjs5t3ajunrbeecjfbpe0ct.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

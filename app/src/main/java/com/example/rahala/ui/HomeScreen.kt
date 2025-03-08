@@ -40,11 +40,18 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+
+
+
 
 
 data class Category(val name: String, val icon: Painter)
 data class Service(val name: String, val icon: Painter)
-
 
 @Composable
 fun SectionHeader(title: String, onSeeAllClick: () -> Unit) {
@@ -52,7 +59,7 @@ fun SectionHeader(title: String, onSeeAllClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp), // Added vertical padding
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -65,25 +72,42 @@ fun SectionHeader(title: String, onSeeAllClick: () -> Unit) {
                 modifier = Modifier.clickable { onSeeAllClick() }
             )
         }
-        Spacer(modifier = Modifier.height(8.dp)) // Ensures spacing from carousel
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
-
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
+    var selectedIndex by rememberSaveable { mutableStateOf(0) }
     Scaffold(
-        bottomBar = { BottomNavigationBar() }
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                selectedIndex = selectedIndex,
+                onIndexChange = { index -> selectedIndex = index }
+            )
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
                 .background(Color.White)
-                .verticalScroll(rememberScrollState()) // Ajout du scroll vertical
-        )  {
-            HeaderSection()
-            SearchBar()
+                .verticalScroll(rememberScrollState())
+        ) { // Zone fixe
+            Column(modifier = Modifier.background(Color.White)) {
+                HeaderSection()
+                SearchBar()
+            }
+
+            // Zone scrollable
+            Column(
+                modifier = Modifier
+                    .weight(1f) // Remplit l'espace restant
+                    .verticalScroll(rememberScrollState())
+            ){
+            //HeaderSection()
+            //SearchBar()
 
             val categories = listOf(
                 Category("Mountains", painterResource(id = R.drawable.mountain)),
@@ -100,20 +124,21 @@ fun HomeScreen() {
             )
 
             Column {
-                SectionHeader("Categories") { /* Action See All Categories */ }
+                SectionHeader("Categories") { }
                 CategoryCarousel(categories, modifier = Modifier.padding(horizontal = 24.dp))
 
                 Spacer(modifier = Modifier.height(26.dp))
 
-                SectionHeader("Most Visited") { /* Action See All Most Visited */ }
+                SectionHeader("Most Visited") { }
                 MostVisitedSection()
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                SectionHeader("Services") { /* Action See All Services */ }
+                SectionHeader("Services") { }
                 ServiceCarousel(services, modifier = Modifier.padding(horizontal = 26.dp))
             }
-        }
+            Spacer(modifier = Modifier.height(20.dp))
+        }}
     }
 }
 
@@ -125,26 +150,21 @@ fun HeaderSection() {
             .height(180.dp),
         contentAlignment = Alignment.Center
     ) {
-        // Image en arrière-plan
         Image(
             painter = painterResource(id = R.drawable.back),
             contentDescription = "Background Image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
-        // Contenu superposé (Logo + Texte)
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 painter = painterResource(id = R.drawable.logowhite),
                 contentDescription = "App Logo",
                 modifier = Modifier.size(180.dp)
             )
-            //Text("Explore The World With US !", fontSize = 12.sp, color = Color.White)
         }
     }
 }
-
 
 @Composable
 fun SearchBar() {
@@ -152,9 +172,9 @@ fun SearchBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .offset(y = (-20).dp) // Permet de chevaucher les deux parties
+            .offset(y = (-20).dp)
             .padding(horizontal = 16.dp)
-            .shadow(elevation = 8.dp, shape = RoundedCornerShape(50)) // Ajoute une ombre en bas
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(50))
             .background(Color.White, shape = RoundedCornerShape(50))
             .padding(8.dp)
     ) {
@@ -240,7 +260,7 @@ fun ServiceItem(service: Service, isSelected: Boolean, onClick: () -> Unit) {
                 painter = service.icon,
                 contentDescription = null,
                 tint = iconColor,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(30.dp)
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -266,7 +286,7 @@ fun CategoryCarousel(categories: List<Category>, modifier: Modifier = Modifier) 
         modifier = modifier // Utilisation du modifier ici
             .fillMaxWidth()
             .horizontalScroll(scrollState),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         categories.forEach { category ->
             CategoryItem(
@@ -287,7 +307,7 @@ fun ServiceCarousel(services: List<Service>, modifier: Modifier = Modifier) {
         modifier = modifier // Utilisation du modifier ici
             .fillMaxWidth()
             .horizontalScroll(scrollState),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         services.forEach { service ->
             ServiceItem(
@@ -298,7 +318,6 @@ fun ServiceCarousel(services: List<Service>, modifier: Modifier = Modifier) {
         }
     }
 }
-
 
 
 /*@Composable
@@ -403,7 +422,7 @@ fun ServicesSection() {
 
 
 
-@Composable
+/*@Composable
 fun BottomNavigationBar() {
     var selectedIndex by remember { mutableStateOf(0) }
 
@@ -412,7 +431,7 @@ fun BottomNavigationBar() {
             Triple(R.drawable.home, R.drawable.home_filled, "Home"),
             Triple(R.drawable.save, R.drawable.save_filled, "Save"),
             Triple(R.drawable.notification, R.drawable.notification_filled, "Home"),
-            Triple(R.drawable.chat, R.drawable.chat_filled, "Home")
+            Triple(R.drawable.profile, R.drawable.profile_filled, "Profile")
         )
 
         items.forEachIndexed { index, (outlinedIcon, filledIcon, description) ->
@@ -430,7 +449,50 @@ fun BottomNavigationBar() {
                     )
                 },
                 selected = isSelected,
-                onClick = { selectedIndex = index }
+                onClick = {
+                    onIndexChange(index)
+                    if (description == "Profile") {
+                        navController.navigate("profile") // Navigate to Profile screen
+                    }}
+            )
+        }
+    }
+}*/
+@Composable
+fun BottomNavigationBar(
+    navController: NavController, //  Ensure NavController is passed
+    selectedIndex: Int,
+    onIndexChange: (Int) -> Unit
+) {
+    BottomNavigation(backgroundColor = Color.White) {
+        val items = listOf(
+            Triple(R.drawable.home, R.drawable.home_filled, "Home"),
+            Triple(R.drawable.save, R.drawable.save_filled, "Save"),
+            Triple(R.drawable.notification, R.drawable.notification_filled, "Notification"),
+            Triple(R.drawable.profile, R.drawable.profile_filled, "Profile")
+        )
+
+        items.forEachIndexed { index, (outlinedIcon, filledIcon, description) ->
+            val isSelected = selectedIndex == index
+            val iconRes = if (isSelected) filledIcon else outlinedIcon
+            val iconColor by animateColorAsState(if (isSelected) Color(0xFF2E4157) else Color.Gray)
+
+            BottomNavigationItem(
+                icon = {
+                    Icon(
+                        painter = painterResource(id = iconRes),
+                        contentDescription = description,
+                        modifier = Modifier.size(25.dp),
+                        tint = iconColor
+                    )
+                },
+                selected = isSelected,
+                onClick = {
+                    onIndexChange(index) //  Change index
+                    if (description == "Profile") {
+                        navController.navigate("profile") //  Navigate to Profile
+                    }
+                }
             )
         }
     }

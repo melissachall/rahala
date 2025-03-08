@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "657837871311-dgqtc421akd3dmbbhuj842jiie8ub2e1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rahala",
+            "certificate_hash": "5ab758b87d5e96165161d4c9b4af10d7ae01c266"
+          }
+        },
+        {
           "client_id": "657837871311-h55d5l874hjs5t3ajunrbeecjfbpe0ct.apps.googleusercontent.com",
           "client_type": 3
         }
